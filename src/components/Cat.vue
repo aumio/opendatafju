@@ -1,5 +1,5 @@
 <template lang="pug">
-  #cat(:class="{ show }", :style="{ left, right }")
+  #cat(:class="{ show: shown }", :style="{ left, right }")
     img(src="@/assets/cat-walking.gif")
     .os-dialog(:class="{ show: showOs }") {{ osContent }}
 </template>
@@ -8,7 +8,7 @@
 export default {
   data () {
     return {
-      show: false,
+      shown: false,
       showOs: false,
       osContent: '(未設定訊息)',
       left: '100px',
@@ -17,10 +17,13 @@ export default {
   },
   methods: {
     play () {
-      this.show = true
+      this.show()
+    },
+    show () {
+      this.shown = true
     },
     hide () {
-      this.show = false
+      this.shown = false
     },
     setOs (content) {
       this.osContent = content
@@ -60,6 +63,7 @@ export default {
     background-color: white;
     padding: 10px 20px;
     border-radius: 10px;
+    z-index: 5;
     opacity: 0;
     transition: all 1s;
 

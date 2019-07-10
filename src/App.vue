@@ -17,7 +17,7 @@ export default {
     return {
       animatorIndex: 0,
       animators: [
-        // 'intro',
+        'intro',
         'city'
       ]
     }

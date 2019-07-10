@@ -3,13 +3,14 @@
     cat(ref="cat")
     street(ref="street")
     img.stray-cat(src="@/assets/stray-cat.png", :class="{ show: showStrayCat }")
-    img.garbage(src="@/assets/garbage.jpg", :class="{ show: showGarbage }")
+    img.garbage(src="@/assets/garbage.jpg", :class="{ show: showGarbage, exit: exitGarbage }")
     .sleeping-cat(src="@/assets/cat-sleeping.png", :class="{ show: showSleepingCat }")
       img.cat(src="@/assets/cat-sleeping.png")
       img.box(src="@/assets/box.png")
       img.z(src="@/assets/z.png")
     .night-overlay(:class="{ show: showNight }")
     img#catched(src="@/assets/womancat.png", :class="{ show: showCatched }")
+    img#ligation(src="@/assets/ligation.gif", :class="{ show: showLigation }", v-if="showLigation")
     situation-modal(ref="situation", :situation="situations[situationIndex]")
 </template>
 
@@ -29,8 +30,10 @@ export default {
       showCatched: false,
       showStrayCat: false,
       showGarbage: false,
+      exitGarbage: false,
       showSleepingCat: false,
       showNight: false,
+      showLigation: false,
       animatorIndex: 0,
       animators: [
         {
@@ -128,20 +131,71 @@ export default {
             this.showNight = true
           },
           duration: 1500
-        }
+        },
         // {
         //   fn: () => {
-        //     this.$refs.cat.hide()
-        //     this.showCatched = true
-        //   },
-        //   duration: 2000
-        // },
-        // {
-        //   fn: () => {
-        //     this.situationIndex = 1
-        //     this.$refs.situation.show()
+        //     this.$emit('done')
         //   }
         // }
+        {
+          fn: () => {
+            this.$refs.cat.show()
+            this.$refs.cat.setOs('好香...從來沒聞過的好味道！')
+            this.$refs.cat.toggleOs(true)
+            this.showSleepingCat = false
+            this.$refs.street.goTo('stray-cat')
+            this.$refs.street.show()
+          },
+          duration: 2000
+        },
+        {
+          fn: () => {
+            this.$refs.cat.setOs('肚子餓了～')
+            this.showNight = false
+          },
+          duration: 1500
+        },
+        {
+          fn: () => {
+            this.$refs.cat.toggleOs(false)
+            this.exitGarbage = true
+            this.$refs.street.goTo('caught')
+          },
+          duration: 2000
+        },
+        {
+          fn: () => {
+            this.$refs.cat.hide()
+            this.showCatched = true
+          },
+          duration: 1000
+        },
+        {
+          fn: () => {
+            this.situationIndex = 2
+            this.$refs.situation.show()
+          }
+        },
+        {
+          fn: () => {
+            this.$refs.situation.hide()
+            this.$refs.street.hide()
+            this.showCatched = false
+            this.showNight = true
+          },
+          duration: 3000
+        },
+        {
+          fn: () => {
+            this.showNight = false
+          },
+          duration: 1500
+        },
+        {
+          fn: () => {
+            this.showLigation = true
+          }
+        }
       ],
       situationIndex: 0,
       situations: [
@@ -161,9 +215,9 @@ export default {
           title: '「可惡，被抓住了，該怎麼辦...」',
           question: ' (主角)很努力的想掙脫，但仍徒勞無功。',
           negative: '放棄掙扎',
-          negativeCallback: () => {},
+          negativeCallback: () => { this.next() },
           positive: '張口咬Shelly',
-          positiveCallback: () => {}
+          positiveCallback: () => { this.next() }
         }
       ]
     }
@@ -222,6 +276,10 @@ export default {
   &.show {
     opacity: 1;
     transform: translateX(0);
+
+    &.exit {
+      transform: translateX(-100%);
+    }
   }
 }
 
@@ -282,5 +340,15 @@ export default {
   &.show {
     opacity: 1;
   }
+}
+
+#ligation {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 }
 </style>
