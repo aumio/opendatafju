@@ -2,14 +2,15 @@
   #city(:class="{ show }")
     cat(ref="cat")
     street(ref="street")
+    img#stray-cat(src="@/assets/stray-cat.png", :class="{ show: showStrayCat }")
     img#catched(src="@/assets/womancat.png", :class="{ show: showCatched }")
     .dialog
     .situation-modal(:class="{ show: showSituation }")
-      .situation-title 「可惡，被抓住了，該怎麼辦...」
-      .situation-question (主角)很努力的想掙脫，但仍徒勞無功。
+      .situation-title {{ currentSituation.title }}
+      .situation-question {{ currentSituation.question }}
       .situation-actions
-        .action-negative 放棄掙扎
-        .action-positive 張口咬Shelly
+        .action-negative(v-if="currentSituation.negative", @click="currentSituation.negativeCallback") {{ currentSituation.negative }}
+        .action-positive(v-if="currentSituation.positive", @click="currentSituation.positiveCallback") {{ currentSituation.positive }}
 </template>
 
 <script>
@@ -25,8 +26,8 @@ export default {
   data () {
     return {
       show: false,
-      expanded: false,
       showCatched: false,
+      showStrayCat: false,
       showSituation: false,
       animatorIndex: 0,
       animators: [
@@ -34,12 +35,49 @@ export default {
           fn: () => {
             this.$refs.street.show()
             this.$refs.cat.play()
+            // this.showStrayCat = true
+          },
+          duration: 1000
+        },
+        {
+          fn: () => {
+            this.$refs.cat.toggleOs(true)
           },
           duration: 3000
         },
         {
           fn: () => {
-            this.$refs.street.forward()
+            this.$refs.cat.toggleOs(false)
+          },
+          duration: 1000
+        },
+        {
+          fn: () => {
+            this.$refs.street.goTo('stray-cat')
+          },
+          duration: 3000
+        },
+        {
+          fn: () => {
+            this.showStrayCat = true
+          },
+          duration: 1000
+        },
+        {
+          fn: () => {
+            this.showSituation = true
+          },
+        },
+        {
+          fn: () => {
+            this.showStrayCat = false
+            this.showSituation = false
+          },
+          duration: 2000
+        },
+        {
+          fn: () => {
+            this.$refs.street.goTo('caught')
           },
           duration: 3000
         },
@@ -52,10 +90,35 @@ export default {
         },
         {
           fn: () => {
+            this.situationIndex = 1
             this.showSituation = true
           }
         }
+      ],
+      situationIndex: 0,
+      situations: [
+        {
+          title: '(主角)抬頭一看，牆壁邊上一隻黑貓向下俯視的自己',
+          question: ' 原來是要找媽媽呀...啊有了，聽說另一邊的街口據說有其他流浪貓有在那邊遇到不知道是收容所還是中途之家的志工',
+          negative: '好喔，那我去那邊看看',
+          negativeCallback: () => { this.next() },
+          // positive: '好喔，那我去那邊看看',
+          potiveCallback: () => {}
+        },
+        {
+          title: '「可惡，被抓住了，該怎麼辦...」',
+          question: ' (主角)很努力的想掙脫，但仍徒勞無功。',
+          negative: '放棄掙扎',
+          negativeCallback: () => {},
+          positive: '張口咬Shelly',
+          potiveCallback: () => {}
+        }
       ]
+    }
+  },
+  computed: {
+    currentSituation () {
+      return this.situations[this.situationIndex]
     }
   },
   methods: {
@@ -85,22 +148,15 @@ export default {
   z-index: 2;
 }
 
-.circle-mask {
+#stray-cat {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  width: 200px;
-  height: 200px;
-  overflow: hidden;
-  // background-color: white;
-  // background-image: url("assets/street.jpg");
-  transition: all 2s;
+  left: 612px;
+  bottom: 286px;
+  transition: all 1s;
+  opacity: 0;
 
-  &.expanded {
-    width: 100vw;
-    height: 100vh;
+  &.show {
+    opacity: 1;
   }
 }
 

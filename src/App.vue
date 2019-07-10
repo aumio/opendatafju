@@ -15,12 +15,9 @@ export default {
   },
   data () {
     return {
-      expanded: false,
-      showCatched: false,
-      showSituation: false,
       animatorIndex: 0,
       animators: [
-        'intro',
+        // 'intro',
         'city'
       ]
     }

@@ -15,8 +15,14 @@ export default {
     show () {
       this.shown = true
     },
-    forward () {
-      this.position = -5000
+    goTo (target) {
+      if (target == 'initial') {
+        this.position = 0
+      } else if (target == 'stray-cat') {
+        this.position = -500
+      } else if (target == 'caught') {
+        this.position = -5000
+      }
     }
   }
 }
