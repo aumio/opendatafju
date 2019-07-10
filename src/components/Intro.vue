@@ -23,18 +23,20 @@ export default {
       hideButton: true
     }
   },
-  mounted () {
-    let self = this
-    let timer = setInterval(() => {
-      if (self.percentage < self.steps.length) {
-        self.percentage++
-      }
-      if (self.percentage === self.steps.length) {
-        // self.$emit('done')
-        clearInterval(timer)
-        self.hideButton = false
-      }
-    }, 1000)
+  methods: {
+    play () {
+      let self = this
+      let timer = setInterval(() => {
+        if (self.percentage < self.steps.length) {
+          self.percentage++
+        }
+        if (self.percentage === self.steps.length) {
+          // self.$emit('done')
+          clearInterval(timer)
+          self.hideButton = false
+        }
+      }, 1000)
+    }
   }
 }
 </script>
