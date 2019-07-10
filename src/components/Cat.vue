@@ -1,7 +1,7 @@
 <template lang="pug">
-  #cat(:class="{ show }")
+  #cat(:class="{ show }", :style="{ left, right }")
     img(src="@/assets/cat-walking.gif")
-    .os-dialog(:class="{ show: showOs }") 媽媽在哪裡...？
+    .os-dialog(:class="{ show: showOs }") {{ osContent }}
 </template>
 
 <script>
@@ -9,7 +9,10 @@ export default {
   data () {
     return {
       show: false,
-      showOs: false
+      showOs: false,
+      osContent: '(未設定訊息)',
+      left: '100px',
+      right: 'auto'
     }
   },
   methods: {
@@ -19,8 +22,14 @@ export default {
     hide () {
       this.show = false
     },
+    setOs (content) {
+      this.osContent = content
+    },
     toggleOs (show) {
       this.showOs = show
+    },
+    move (distance) {
+      this.left = distance
     }
   }
 }
@@ -30,9 +39,9 @@ export default {
 #cat {
   position: fixed;
   bottom: 0px;
-  left: 100px;
-  transition: all 1s;
+  transition: left 2s, all 1s;
   opacity: 0;
+  z-index: 3 !important;
 
   &.show {
     opacity: 1;

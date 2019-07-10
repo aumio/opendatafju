@@ -15,6 +15,9 @@ export default {
     show () {
       this.shown = true
     },
+    hide () {
+      this.shown = false
+    },
     goTo (target) {
       if (target == 'initial') {
         this.position = 0
@@ -32,7 +35,7 @@ export default {
 #street {
   overflow: scroll;
   opacity: 0;
-  transition: all .5s;
+  transition: left .5s, opacity 1.5s;
   position: fixed;
   top: 0;
   bottom: 0;
