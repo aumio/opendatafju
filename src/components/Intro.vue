@@ -1,5 +1,5 @@
 <template lang="pug">
-  #intro.full-screen(:class="{ hide: hideAll }")
+  #intro.full-screen(:class="{ show }")
     .loading
       .loading-mask(:style="{ height: steps[percentage] + '%' }")
       img(src="@/assets/cat-walking-empty.gif")
@@ -10,7 +10,7 @@
       | 但願未來，每一隻浪浪，甚至是所有的生物，
       br
       | 有一日都能找到自己的家，與家人相伴
-    button(:class="{ hide: hideButton }", @click="hideAll = true;$emit('done')") START
+    button(:class="{ hide: hideButton }", @click="show = false;$emit('done')") START
 </template>
 
 <script>
@@ -19,23 +19,28 @@ export default {
     return {
       percentage: 0,
       steps: [10, 30, 50, 80, 100],
-      hideAll: false,
+      show: false,
       hideButton: true
     }
   },
   methods: {
     play () {
       let self = this
-      let timer = setInterval(() => {
-        if (self.percentage < self.steps.length) {
-          self.percentage++
-        }
-        if (self.percentage === self.steps.length) {
-          // self.$emit('done')
-          clearInterval(timer)
-          self.hideButton = false
-        }
-      }, 1000)
+
+      setTimeout(function () {
+        self.show = true
+
+        let timer = setInterval(() => {
+          if (self.percentage < self.steps.length) {
+            self.percentage++
+          }
+          if (self.percentage === self.steps.length) {
+            // self.$emit('done')
+            clearInterval(timer)
+            self.hideButton = false
+          }
+        }, 1000)
+      })
     }
   }
 }
@@ -48,11 +53,6 @@ export default {
   justify-content: center;
   align-items: center;
   color: white;
-  transition: all .5s;
-
-  &.hide {
-    opacity: 0;
-  }
 
   .loading {
     display: inline-block;

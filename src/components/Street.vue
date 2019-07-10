@@ -36,7 +36,7 @@ export default {
 
   &.show {
     opacity: 1;
-    z-index: auto;
+    z-index: 1;
   }
 
   .bg-image {

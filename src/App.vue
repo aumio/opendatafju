@@ -20,7 +20,8 @@ export default {
       showSituation: false,
       animatorIndex: 0,
       animators: [
-        'intro', 'city'
+        'intro',
+        'city'
       ]
     }
   },
@@ -42,6 +43,17 @@ export default {
 </script>
 
 <style lang="scss">
+#intro, #city {
+  opacity: 0;
+  transition: all 1s;
+  z-index: -1;
+
+  &.show {
+    opacity: 1;
+    z-index: 1;
+  }
+}
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

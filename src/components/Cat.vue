@@ -1,20 +1,20 @@
 <template lang="pug">
-  #cat(:class="{ hide: isHidden }"): img(src="@/assets/cat-walking.gif")
+  #cat(:class="{ show }"): img(src="@/assets/cat-walking.gif")
 </template>
 
 <script>
 export default {
   data () {
     return {
-      isHidden: true
+      show: false
     }
   },
   methods: {
     play () {
-      this.isHidden = false
+      this.show = true
     },
     hide () {
-      this.isHidden = true
+      this.show = false
     }
   }
 }
@@ -25,12 +25,11 @@ export default {
   position: fixed;
   bottom: 0px;
   left: 100px;
-  z-index: 1;
   transition: all 1s;
+  opacity: 0;
 
-  &.hide {
-    opacity: 0;
-    z-index: -1;
+  &.show {
+    opacity: 1;
   }
 
   img {

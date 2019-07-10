@@ -1,5 +1,5 @@
 <template lang="pug">
-  #city
+  #city(:class="{ show }")
     cat(ref="cat")
     street(ref="street")
     img#catched(src="@/assets/womancat.png", :class="{ show: showCatched }")
@@ -24,6 +24,7 @@ export default {
   },
   data () {
     return {
+      show: false,
       expanded: false,
       showCatched: false,
       showSituation: false,
@@ -59,6 +60,7 @@ export default {
   },
   methods: {
     play () {
+      this.show = true
       this.playAnimation()
     },
     playAnimation () {
@@ -79,6 +81,10 @@ export default {
 </script>
 
 <style lang="scss">
+#city * {
+  z-index: 2;
+}
+
 .circle-mask {
   position: fixed;
   top: 50%;
@@ -104,7 +110,7 @@ img#catched {
   position: fixed;
   width: 400px;
   bottom: 0;
-  right: 200px;
+  right: 10%;
 
   &.show {
     opacity: 1;
