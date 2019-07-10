@@ -5,23 +5,18 @@
     img#stray-cat(src="@/assets/stray-cat.png", :class="{ show: showStrayCat }")
     img#catched(src="@/assets/womancat.png", :class="{ show: showCatched }")
     .dialog
-    .situation-modal(:class="{ show: showSituation }")
-      .situation-title {{ currentSituation.title }}
-      .situation-question {{ currentSituation.question }}
-      .situation-actions
-        .action-negative(v-if="currentSituation.negative", @click="currentSituation.negativeCallback") {{ currentSituation.negative }}
-        .action-positive(v-if="currentSituation.positive", @click="currentSituation.positiveCallback") {{ currentSituation.positive }}
+    situation-modal(ref="situation", :situation="currentSituation")
 </template>
 
 <script>
 import Cat from '@/components/Cat'
 import Street from '@/components/Street'
-import Start from '@/components/Start'
+import SituationModal from '@/components/SituationModal'
 
 export default {
   name: 'app',
   components: {
-    Cat, Street, Start
+    Cat, Street, SituationModal
   },
   data () {
     return {
@@ -35,7 +30,6 @@ export default {
           fn: () => {
             this.$refs.street.show()
             this.$refs.cat.play()
-            // this.showStrayCat = true
           },
           duration: 1000
         },
@@ -65,15 +59,15 @@ export default {
         },
         {
           fn: () => {
-            this.showSituation = true
+            this.$refs.situation.show()
           },
         },
         {
           fn: () => {
             this.showStrayCat = false
-            this.showSituation = false
+            this.$refs.situation.hide()
           },
-          duration: 2000
+          duration: 1000
         },
         {
           fn: () => {
@@ -91,7 +85,7 @@ export default {
         {
           fn: () => {
             this.situationIndex = 1
-            this.showSituation = true
+            this.$refs.situation.show()
           }
         }
       ],
@@ -102,8 +96,6 @@ export default {
           question: ' 原來是要找媽媽呀...啊有了，聽說另一邊的街口據說有其他流浪貓有在那邊遇到不知道是收容所還是中途之家的志工',
           negative: '好喔，那我去那邊看看',
           negativeCallback: () => { this.next() },
-          // positive: '好喔，那我去那邊看看',
-          potiveCallback: () => {}
         },
         {
           title: '「可惡，被抓住了，該怎麼辦...」',
@@ -111,7 +103,7 @@ export default {
           negative: '放棄掙扎',
           negativeCallback: () => {},
           positive: '張口咬Shelly',
-          potiveCallback: () => {}
+          positiveCallback: () => {}
         }
       ]
     }
@@ -170,66 +162,6 @@ img#catched {
 
   &.show {
     opacity: 1;
-  }
-}
-
-.situation-modal {
-  position: fixed;
-  top: 50px;
-  left: 100px;
-  right: 100px;
-  padding: 30px;
-  background-color: rgba(0, 0, 0, .3);
-  color: white;
-  border-radius: 10px;
-  transition: all 1s;
-  opacity: 0;
-
-  &.show {
-    opacity: 1;
-  }
-
-  .situation-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-
-  .situation-question {
-    font-size: 18px;
-  }
-
-  .situation-actions {
-    margin-top: 40px;
-    display: flex;
-
-    .action-positive, .action-negative {
-      width: 100%;
-      border-radius: 4px;
-      padding: 10px;
-      text-align: center;
-      font-size: 18px;
-      margin: 0 20px;
-      transition: all .3s;
-
-      &:hover {
-        background-color: white;
-        border: 1px solid black;
-        color: black;
-        cursor: pointer;
-      }
-    }
-
-    .action-positive {
-      background-color: orange;
-      border: 1px solid transparent;
-      color: black;
-    }
-
-    .action-negative {
-      background-color: transparent;
-      border: 1px solid white;
-      color: white;
-    }
   }
 }
 </style>
