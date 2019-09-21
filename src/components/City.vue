@@ -12,17 +12,19 @@
     img#catched(src="@/assets/womancat.png", :class="{ show: showCatched }")
     img#ligation(src="@/assets/ligation.gif", :class="{ show: showLigation }", v-if="showLigation")
     situation-modal(ref="situation", :situation="situations[situationIndex]")
+    data-modal(ref="data", @ended="next")
 </template>
 
 <script>
 import Cat from '@/components/Cat'
 import Street from '@/components/Street'
 import SituationModal from '@/components/SituationModal'
+import DataModal from '@/components/DataModal'
 
 export default {
   name: 'app',
   components: {
-    Cat, Street, SituationModal
+    Cat, Street, SituationModal, DataModal
   },
   data () {
     return {
@@ -75,8 +77,14 @@ export default {
         },
         {
           fn: () => {
-            this.showStrayCat = false
             this.$refs.situation.hide()
+            this.$refs.data.show()
+          },
+        },
+        {
+          fn: () => {
+            this.$refs.data.hide()
+            this.showStrayCat = false
           },
           duration: 1000
         },
@@ -108,8 +116,14 @@ export default {
         },
         {
           fn: () => {
-            this.$refs.cat.toggleOs(false)
             this.$refs.situation.hide()
+            this.$refs.data.show()
+          },
+        },
+        {
+          fn: () => {
+            this.$refs.data.hide()
+            this.$refs.cat.toggleOs(false)
           },
           duration: 500
         },
@@ -179,6 +193,12 @@ export default {
         {
           fn: () => {
             this.$refs.situation.hide()
+            this.$refs.data.show()
+          },
+        },
+        {
+          fn: () => {
+            this.$refs.data.hide()
             this.$refs.street.hide()
             this.showCatched = false
             this.showNight = true
@@ -195,7 +215,12 @@ export default {
           fn: () => {
             this.showLigation = true
           }
-        }
+        },
+        {
+          fn: () => {
+            this.$refs.data.show()
+          },
+        },
       ],
       situationIndex: 0,
       situations: [
@@ -251,8 +276,8 @@ export default {
 
 .stray-cat {
   position: fixed;
-  left: 612px;
-  bottom: 286px;
+  left: 63%;
+  bottom: 35%;
   transition: all 1s;
   opacity: 0;
 

@@ -1,6 +1,6 @@
 <template lang="pug">
   #street.full-screen(:class="{ show: shown }")
-    img.bg-image(src="@/assets/street.jpg", :style="{ left: position + 'px' }")
+    img.bg-image(src="@/assets/street.jpg", :style="{ left: position + '%' }")
 </template>
 
 <script>
@@ -22,9 +22,9 @@ export default {
       if (target == 'initial') {
         this.position = 0
       } else if (target == 'stray-cat') {
-        this.position = -500
+        this.position = -40
       } else if (target == 'caught') {
-        this.position = -5000
+        this.position = -380
       }
     }
   }
