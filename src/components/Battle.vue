@@ -22,7 +22,29 @@
           .hp-bar
             img.fish(src="@/assets/fish.svg", v-for="i in cat.hp")
     .narration-dialog(:class="{ out: !showNarration }")
-      .narration-text.typewriter(v-if="showNarrationText") 狗狗發起了突襲！
+      .narration-text.typewriter(v-if="showNarrationText") {{ narrationText }}
+    .action-panel(v-if="showAction")
+      ul.action-category(v-if="actionCategory === null")
+        li(@click="actionCategory = 'skills'") 攻擊
+        li(@click="actionCategory = 'items'") 道具
+        li 逃跑
+      ul.navigations-list(v-if="actionCategory !== null")
+        li(@click="actionCategory = null") < 返回
+      ul.skills-list(v-if="actionCategory === 'skills'")
+        li 揮抓
+        li 貓顫慄
+        li 暴怒的鋼鐵尾巴
+        li 裝可愛
+      ul.items-list(v-if="actionCategory === 'items'")
+        li(v-for="(item, index) in items", :key="index", @click="selectedItem = index; showItemDescription = true") {{ item.name }}
+    .item-description(v-if="showItemDescription")
+      .overlay
+      .modal
+        .modal-title {{ items[selectedItem].name }}
+        .modal-content {{ items[selectedItem].description }}
+        .modal-actions
+          button.positive(@click="showItemDescription = false") 使用
+          button.negative(@click="showItemDescription = false") 取消
 </template>
 
 <script>
@@ -45,6 +67,25 @@ export default {
       showStatus: false,
       showNarration: false,
       showNarrationText: false,
+      narrationText: '',
+      showAction: false,
+      actionCategory: null,
+      selectedItem: null,
+      showItemDescription: false,
+      items: [
+        {
+          name: '阿忠的魚骨',
+          description: '讓敵方人物嚇到暫停一回合',
+        },
+        {
+          name: '貓罐頭',
+          description: '回復 2 點 HP',
+        },
+        {
+          name: '小玩偶',
+          description: '分散敵方注意力，承受一次攻擊',
+        },
+      ],
       animatorIndex: 0,
       animators: [
         {
@@ -69,6 +110,7 @@ export default {
         },
         {
           fn: () => {
+            this.narrationText = '狗狗發起了突襲！'
             this.showNarrationText = true
           },
           duration: 1500
@@ -83,6 +125,7 @@ export default {
         {
           fn: () => {
             this.showStatus = true
+            this.showAction = true
           },
           duration: 500
         },
@@ -125,6 +168,12 @@ export default {
 </script>
 
 <style lang="scss">
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 #duel {
   background-color: #14425c;
   position: relative;
@@ -349,6 +398,151 @@ export default {
     0% { background-color: transparent }
     50% { background-color: black }
     100% { background-color: transparent }
+  }
+
+  .action-panel {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 200px;
+    padding: 30px 50px;
+    display: flex;
+
+    ul.action-category {
+      display: flex;
+      height: 100%;
+      flex: 1 1 auto;
+
+      li {
+        cursor: pointer;
+        flex: 1 1 auto;
+        color: white;
+        margin: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        background-color: gray;
+        height: 100%;
+        font-size: 36px;
+      }
+    }
+
+    ul.navigations-list {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      flex: 0 0 120px;
+
+      li {
+        cursor: pointer;
+        color: white;
+        margin: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        background-color: gray;
+        height: 100%;
+        font-size: 24px;
+      }
+    }
+
+    ul.skills-list {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+      flex: 1 1 auto;
+
+      li {
+        cursor: pointer;
+        flex: 0 0 calc(50% - 20px);
+        color: white;
+        margin: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        background-color: gray;
+        height: calc(50% - 20px);
+        font-size: 36px;
+      }
+    }
+
+    ul.items-list {
+      display: flex;
+      height: 100%;
+      flex: 1 1 auto;
+
+      li {
+        cursor: pointer;
+        flex: 0 0 30%;
+        color: white;
+        margin: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        background-color: gray;
+        height: 100%;
+        font-size: 36px;
+      }
+    }
+  }
+
+  .item-description {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    background-color: rgba(0, 0, 0, .3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .modal {
+      background-color: #444;
+      padding: 20px;
+      width: 360px;
+
+      .modal-title {
+        font-size: 24px;
+        color: white;
+        text-align: center;
+      }
+
+      .modal-content {
+        color: white;
+        text-align: center;
+        margin: 20px 0 40px;
+      }
+
+      .modal-actions {
+        display: flex;
+
+        button {
+          cursor: pointer;
+          color: white;
+          border: none;
+          flex: 1 1 auto;
+          height: 50px;
+          border-radius: 5px;
+          margin: 0 5px;
+          font-size: 24px;
+
+          &.positive {
+            background-color: #0a0;
+          }
+
+          &.negative {
+            background-color: #c00;
+          }
+        }
+      }
+    }
   }
 }
 </style>
