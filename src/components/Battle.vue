@@ -1,8 +1,9 @@
 <template lang="pug">
   #duel.full-screen
-    .duel-dog
+    .shining-overlay(v-if="showOverlay")
+    .duel-dog(:class="{ out: !showDog }")
       img.dog(src="@/assets/battle-dog.png", @click="subHp(dog)")
-      .dueler-info(@click="addHp(dog)")
+      .dueler-info(@click="addHp(dog)", :class="{ out: !showStatus }")
         .row
           .dueler-name {{ dog.name }}
           .dueler-level Lv.{{ dog.level }}
@@ -10,9 +11,9 @@
           span HP
           .hp-bar
             img.bone(src="@/assets/bone.svg", v-for="i in dog.hp")
-    .duel-cat
+    .duel-cat(:class="{ out: !showCat }")
       img.cat(src="@/assets/battle-cat.png", @click="subHp(cat)")
-      .dueler-info(@click="addHp(cat)")
+      .dueler-info(@click="addHp(cat)", :class="{ out: !showStatus }")
         .row
           .dueler-name {{ cat.name }}
           .dueler-level Lv.{{ cat.level }}
@@ -20,6 +21,8 @@
           span HP
           .hp-bar
             img.fish(src="@/assets/fish.svg", v-for="i in cat.hp")
+    .narration-dialog(:class="{ out: !showNarration }")
+      .narration-text.typewriter(v-if="showNarrationText") 狗狗發起了突襲！
 </template>
 
 <script>
@@ -36,10 +39,58 @@ export default {
         level: 30,
         hp: 5,
       },
+      showOverlay: true,
+      showDog: false,
+      showCat: false,
+      showStatus: false,
+      showNarration: false,
+      showNarrationText: false,
+      animatorIndex: 0,
+      animators: [
+        {
+          fn: () => {
+            //
+          },
+          duration: 1500
+        },
+        {
+          fn: () => {
+            this.showOverlay = false
+            this.showDog = true
+            this.showCat = true
+          },
+          duration: 1500
+        },
+        {
+          fn: () => {
+            this.showNarration = true
+          },
+          duration: 500
+        },
+        {
+          fn: () => {
+            this.showNarrationText = true
+          },
+          duration: 1500
+        },
+        {
+          fn: () => {
+            this.showNarrationText = false
+            // this.showNarration = false
+          },
+          duration: 500
+        },
+        {
+          fn: () => {
+            this.showStatus = true
+          },
+          duration: 500
+        },
+      ],
     }
   },
   mounted () {
-    //
+    this.play()
   },
   methods: {
     addHp (dueler) {
@@ -51,6 +102,23 @@ export default {
       if (dueler.hp >= 1) {
         dueler.hp = dueler.hp - 1
       }
+    },
+    play () {
+      // this.show = true
+      this.playAnimation()
+    },
+    playAnimation () {
+      const animator = this.animators[this.animatorIndex]
+
+      animator.fn()
+
+      if (animator.duration) {
+        setTimeout(this.next, animator.duration)
+      }
+    },
+    next () {
+      this.animatorIndex++
+      this.playAnimation()
     },
   }
 }
@@ -88,6 +156,7 @@ export default {
     border-radius: 10px;
     color: #13415d;
     padding: 15px 40px;
+    transition: all 1s;
 
     &:after {
       content: '';
@@ -98,6 +167,10 @@ export default {
       background-color: #78b9d3;
       position: absolute;
       bottom: -22px;
+    }
+
+    &.out {
+      opacity: 0;
     }
 
     .row {
@@ -146,10 +219,15 @@ export default {
   .duel-dog {
     position: absolute;
     right: 0;
+    transition: all 1s;
 
     &:before {
       bottom: 85px;
       right: 40px;
+    }
+
+    &.out {
+      right: 100vw;
     }
 
     img.dog {
@@ -173,10 +251,15 @@ export default {
     position: absolute;
     top: 400px;
     left: 0;
+    transition: all 1s;
 
     &:before {
       bottom: 65px;
       right: 0;
+    }
+
+    &.out {
+      left: 100vw;
     }
 
     img.cat {
@@ -202,6 +285,70 @@ export default {
 
   .fish {
     width: 60px;
+  }
+
+  .narration-dialog {
+    transition: all 1s;
+    background-color: black;
+    color: white;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 200px;
+    padding: 30px 50px;
+    font-size: 36px;
+
+    &.out {
+      opacity: 0;
+    }
+
+    .narration-text {
+      //
+    }
+  }
+
+  .typewriter {
+    overflow: hidden; /* Ensures the content is not revealed until the animation */
+    // border-right: .15em solid orange; /* The typwriter cursor */
+    white-space: nowrap; /* Keeps the content on a single line */
+    margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+    letter-spacing: .15em; /* Adjust as needed */
+    text-align: left;
+    display: inline-block;
+    // animation:
+    //   typing 3.5s steps(40, end),
+    //   blink-caret .75s step-end infinite;
+    animation:
+      typing 3.5s steps(40, end);
+  }
+
+  /* The typing effect */
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+
+  /* The typewriter cursor effect */
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: orange; }
+  }
+
+  .shining-overlay {
+    transition: all .5s;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    animation: shining .5s infinite;
+  }
+
+  @keyframes shining {
+    0% { background-color: transparent }
+    50% { background-color: black }
+    100% { background-color: transparent }
   }
 }
 </style>

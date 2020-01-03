@@ -2,23 +2,25 @@
   #app
     intro(ref="intro", @done="next")
     city(ref="city", @done="next")
+    battle
 </template>
 
 <script>
 import Intro from '@/components/Intro'
 import City from '@/components/City'
+import Battle from '@/components/Battle'
 
 export default {
   name: 'app',
   components: {
-    Intro, City
+    Intro, City, Battle
   },
   data () {
     return {
       animatorIndex: 0,
       animators: [
-        'intro',
-        'city'
+        // 'intro',
+        // 'city'
       ]
     }
   },
